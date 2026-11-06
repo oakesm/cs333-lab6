@@ -310,6 +310,8 @@ Now run it a **second** time.
 
 **Question 5:** what changed the second time? Why?
 
+Apple is in there twice at the end
+
 ## 9. Look at it in mongosh
 
 In your **second** terminal:
@@ -325,6 +327,8 @@ db.fruits.find()
 ```
 
 **Question 6:** your model is called `Fruit`. What is the collection called? Are your fruits from Lab 5 Part 3 in there too? Why?
+I'm having an error using fruitsDB because of case sensitive so it's all under fruitsdb. Yes my fruits from lab 5 are there too. The collection is called fruits. 
+
 
 ## 10. Many at once, and a wrong type
 
@@ -348,6 +352,9 @@ await mango.save();
 ```
 
 **Question 7:** what error do you get? How does the schema protect your data? (Then delete the Mango lines.)
+
+ValidationError: Fruit validation failed: rating: Cast to Number failed for value "ten" (type string)
+It's the wrong type. It is string instead of integer. 
 
 Commit: `Part 2: Mongoose`
 
