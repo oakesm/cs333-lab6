@@ -49,6 +49,8 @@ show collections
 
 **Question 1:** what is `_id` for? What would MongoDB do if you left it out? (Try it: insert a third product with no `_id`, then look at it in step 3.)
 
+id is for the index of the item. If left out it does get assigned an id: Where the other products say "_id: 1" it says  "_id: ObjectId('6aee547eed596c502e956925')".
+
 ## 3. Read
 
 ```js
@@ -60,6 +62,8 @@ db.products.find({}, { name: 1, _id: 0 })
 
 **Question 2:** what does `$gt` mean? What does the second `{ name: 1, _id: 0 }` in the last command do? (It's called a **projection**.)
 
+It means greater than. It gives the names of all the items. 
+
 ## 4. Update
 
 The Pen has no `stock`. Give it one:
@@ -70,6 +74,8 @@ db.products.find({ _id: 1 })
 ```
 
 **Question 3:** `stock` didn't exist on the Pen. What did `$set` do?
+
+Gave the pen a stock. 
 
 ## 5. Delete
 
@@ -105,10 +111,133 @@ db.products.find({ _id: 3 })
 
 **Question 4:** in a SQL database, where would the reviews go? Why is keeping them inside the product handy here?
 
+In an SQL the reviews would go to a seperate table for reviews. Keeping them inside the product is nice to know the reviews are talking about this specific product. 
+
 Copy everything from your terminal (from `mongosh` to the last command) and paste it here, in a code block:
 
+some was done in class and I couldn't repeat
+
 ```
-paste your terminal here
+mongosh
+Current Mongosh Log ID: 6aee5398ed596c502e956924
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.14.1
+Using MongoDB:          8.2.12
+Using Mongosh:          2.14.1
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2026-11-02T18:10:32.155-08:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> use shopDB
+switched to db shopDB
+shopDB> db.products.insertOne({ _id: 1, name: "Pen", price: 1.20 })
+MongoServerError: E11000 duplicate key error collection: shopDB.products index: _id_ dup key: { _id: 1 }
+shopDB> db
+shopDB
+shopDB> db.products.insertOne({_id:1, name: "Pen", price: 1.20 })
+MongoServerError: E11000 duplicate key error collection: shopDB.products index: _id_ dup key: { _id: 1 }
+shopDB> show dbs
+admin     40.00 KiB
+config    72.00 KiB
+fruitsdb  72.00 KiB
+local     40.00 KiB
+shopDB    68.00 KiB
+shopDB> db.products.find()
+[
+  { _id: 1, name: 'Pen', price: 1.2, stock: 35 },
+  { _id: 2, name: 'Pencil', price: 0.8, stock: 12 },
+  {
+    _id: 3,
+    name: 'Eraser',
+    price: 1.3,
+    stock: 43,
+    reviews: [ { authorName: 'Jim', rating: 4, review: 'Cool Eraser' } ]
+  }
+]
+shopDB> db.products.insertOne({name: "Stapler", price: 5, stock: 3})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6aee547eed596c502e956925')
+}
+shopDB> db.products.find()
+[
+  { _id: 1, name: 'Pen', price: 1.2, stock: 35 },
+  { _id: 2, name: 'Pencil', price: 0.8, stock: 12 },
+  {
+    _id: 3,
+    name: 'Eraser',
+    price: 1.3,
+    stock: 43,
+    reviews: [ { authorName: 'Jim', rating: 4, review: 'Cool Eraser' } ]
+  },
+  {
+    _id: ObjectId('6aee547eed596c502e956925'),
+    name: 'Stapler',
+    price: 5,
+    stock: 3
+  }
+]
+shopDB> db.products.find({name: "Pencil" })
+[ { _id: 2, name: 'Pencil', price: 0.8, stock: 12 } ]
+shopDB> db.products.find ({ price: {$gt:1 }})
+[
+  { _id: 1, name: 'Pen', price: 1.2, stock: 35 },
+  {
+    _id: 3,
+    name: 'Eraser',
+    price: 1.3,
+    stock: 43,
+    reviews: [ { authorName: 'Jim', rating: 4, review: 'Cool Eraser' } ]
+  },
+  {
+    _id: ObjectId('6aee547eed596c502e956925'),
+    name: 'Stapler',
+    price: 5,
+    stock: 3
+  }
+]
+shopDB> db.products.find({}, {name: 1, _id:0})
+[
+  { name: 'Pen' },
+  { name: 'Pencil' },
+  { name: 'Eraser' },
+  { name: 'Stapler' }
+]
+shopDB> db.products.updateOne({_id:1}, {$set: {stock: 35}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+shopDB> db.products.find ({_id:1})
+[ { _id: 1, name: 'Pen', price: 1.2, stock: 35 } ]
+shopDB> db.products.updateOne({_id:3}, {$push: {reviews: {authorName: "Mya", rating: 5, review: "It erases well"}}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+shopDB> db.products.find({_id:3})
+[
+  {
+    _id: 3,
+    name: 'Eraser',
+    price: 1.3,
+    stock: 43,
+    reviews: [
+      { authorName: 'Jim', rating: 4, review: 'Cool Eraser' },
+      { authorName: 'Mya', rating: 5, review: 'It erases well' }
+    ]
+  }
+]
+shopDB>
 ```
 
 Type `exit` to leave mongosh.
