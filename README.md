@@ -436,6 +436,8 @@ Now go back to the terminal running `node index.js` and press **Ctrl+C**. Send t
 
 **Question 8:** what does `curl` say now? Why? What would happen to your API if you closed that terminal, or your laptop?
 
+Failed to connect to local host:3000. Because it is no longer running. The API would crash or disconnect because the server is terminated. 
+
 You can close the third terminal now.
 
 ---
@@ -464,6 +466,7 @@ curl http://localhost:3000/random
 
 **Question 9:** what is the `status` of `jokes`? What does the `↺` column count?
 
+Status of jokes is online. It represents the number of restarts
 It works, and no terminal is busy running it.
 
 ## 16. Logs
@@ -473,6 +476,8 @@ pm2 logs jokes --lines 20
 ```
 
 **Question 10:** what's in the log? Which line of `index.js` printed it? (Press **Ctrl+C** to stop watching the log. That only stops the log, not your API.)
+
+It shows the jokes of the last 20 lines. Console.log printed it. 
 
 Other pm2 commands you'll use:
 
@@ -515,7 +520,11 @@ It should say `active (running)`. Open `http://your-server-address` in your **la
 
 **Question 11:** what page do you see? Where on the server does that page live?
 
-**TODO:** also try `http://your-server-address:3000/random` in your browser. **Question 12:** what happens? (Either answer is fine; just say what you see.)
+**TODO:** also try `http://your-server-address:3000/random` in your browser. 
+
+**Question 12:** what happens? (Either answer is fine; just say what you see.)
+
+Showed cannot GET for https://mya.cis251296.projects.jetstream-cloud.org but adding /random shows a joke with it's id. 
 
 ## 19. Send /api/ to your API
 
@@ -556,6 +565,7 @@ Open `http://your-server-address/api/random` in your laptop's browser. 🎉 Your
 
 **Question 13:** the browser asked for `/api/random`, but your Express route is `/random`. Which part of the nginx setting takes `/api` off? (Hint: try it without the last `/` in `proxy_pass`, test, reload, and see what happens. Put it back after.)
 
+Nginx sends /api/random directly to the Node server instead of stripping /api down to /random
 ---
 
 # Part 6: Use it from your laptop 💻 LAPTOP
@@ -582,7 +592,11 @@ Send request **5** again.
 
 **Question 14:** what happened to your joke? Why? Think about Part 2: your fruits were still there after `app.js` stopped. How would MongoDB fix your jokes? (That's Lab 7.)
 
+No joke found with ID 14. It did not save. 
+
 **Question 15:** in your own words, what does pm2 do, and what does nginx do? Why do we need both?
+
+pm2 runs node continuously in the background. It works even if the terminal is shut down. nginx is a web server to the public internet and uses ports. We need both because they do different things. pm2 helps run node and nginx helps run the network and trafficking. 
 
 ## Changed your code?
 
